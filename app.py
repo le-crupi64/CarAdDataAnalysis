@@ -10,7 +10,7 @@ df = pd.read_csv("C:\\Users\\Leigh\\Desktop\\Sprint 4 Project\\vehicles_us.csv")
 df[['make', 'model']] = df['model'].str.split(' ',n=1, expand=True)
 
 # Make model_year and date_posted the datetime data type 
-df['model_year'] = pd.to_datetime(df['model_year'], format='%Y')
+df['model_year'] = pd.to_datetime(df['model_year'], format='%Y', errors='coerce').dt.year
 df['date_posted'] = pd.to_datetime(df['date_posted'], format= '%Y-%m-%d')
 
 # Add in Header 
