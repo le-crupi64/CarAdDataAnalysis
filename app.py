@@ -14,7 +14,7 @@ df['model_year'] = pd.to_datetime(df['model_year'], format='%Y', errors='coerce'
 df['date_posted'] = pd.to_datetime(df['date_posted'], format= '%Y-%m-%d')
 
 # Add in Header 
-st.header('Car Listing Data Analysis', divider='blue')
+st.header('Car Listing Data Analysis')
 
 # Plot the Vehicles Listed by make Chart 
 fig1= px.histogram(df, x="make", title=' Number of Vehicles Listed by Make')
