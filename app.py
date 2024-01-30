@@ -34,5 +34,5 @@ if agree:
 
 
 # Show conclusion 
-st.header('Conclusions', divider='blue')
+st.header('Conclusions')
 st.write('The majority of vehicles listed are made by Ford (12.6k) followed by Chevrolet (10.61k) and Toyota (5.4k). Mercedes has the least number of vehicles listed (41). There is a trend suggesting that the price of newer cars typicaly has a higher ceiling. I can also see an that Chevys and Fords from the 1960s are an exception to that trend.')
