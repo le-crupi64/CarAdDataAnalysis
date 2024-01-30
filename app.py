@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px 
 
 # Read in the Data
-df = pd.read_csv("C:\\Users\\Leigh\\Desktop\\Sprint 4 Project\\vehicles_us.csv")
+df = pd.read_csv("vehicles_us.csv")
 
 # Clean Up the Data 
 # Separate make and model into 2 columns 
