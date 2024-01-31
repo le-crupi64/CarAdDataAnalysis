@@ -25,26 +25,28 @@ df= df.dropna(axis='rows')
 st.header('Car Listing Data Analysis')
 
 # Plot the Vehicles Listed by make Chart 
+
 fig1 =px.histogram(df, x="make", title=' Number of Vehicles Listed by Make')
 fig1.update_layout(xaxis_title='Vehicle Make ', yaxis_title='Number of Vehicles Listed')
 fig1.show()
+
 st.write('The majority of vehicles listed are made by Ford (12.6k) followed by Chevrolet (10.61k) and Toyota (5.4k). Mercedes has the least number of vehicles listed (41).')
 
 
 # Plot The model year by price with make Chart
-# Checkbox for data normalization
-normalize_data = st.checkbox("Normalize Data", value=False)
-# Scatter plot
-fig = px.scatter(df, x="model_year", y="price", color="make", title="Price vs. Model Year")
-fig.update_layout(xaxis_title='Model Year', yaxis_title='Price')
-# Normalize data if the checkbox is selected
-if normalize_data:
-    fig.update_traces(marker=dict(size=10 / df['price']))
-# Update layout
-fig.update_layout(xaxis_title='Model Year', yaxis_title='Price')
-# Display the plot
-st.plotly_chart(fig)
+
+# Sidebar checkbox for selecting condition
+show_condition_1 = st.sidebar.checkbox("Show chart with Condition", value=True)
+# Determine which condition to show based on the checkbox value
+selected_condition_column = 'make' if show_condition_1 else 'condition'
+# Create Plotly Express figure
+fig3 = px.scatter(df, x="model_year", y="price", color=selected_condition_column, title="Price vs. Model Year")
+fig3.update_layout(xaxis_title='Model Year', yaxis_title='Price')
+
+st.plotly_chart(fig3)
 st.write('There is a trend suggesting that the price of newer cars typicaly has a higher ceiling. I can also see an that Chevys and Fords from the 1960s are an exception to that trend. ')
+st.write('We Can see that typically the lowest priced cars are salvage. Most cars listed are good, excellent, or like new. ')
+
 
 #plot and show model year by price with condition
 fig3 = px.scatter(df, x="model_year", y="price", color="condition", title="Price vs. Model Year")
@@ -63,10 +65,6 @@ selected_dimensions = st.multiselect(
 scatter_matrix = px.scatter_matrix(
     df,
     dimensions=selected_dimensions,
-    color="model",
-    category_orders={"model": df["model"].unique()},
-    width=800,
-    height=800
 )
 # Display the plot
 st.plotly_chart(scatter_matrix)
