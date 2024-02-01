@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd 
 import plotly.express as px 
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 # Read in the Data
 df = pd.read_csv("vehicles_us.csv")
