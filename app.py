@@ -56,14 +56,15 @@ selected_conditions = st.selectbox("Choose a condition:", conditions)
 # Filter the dataframe based on the selected car model
 filtered_df = df[df["condition"] == selected_conditions]
 
-# Calculate the price distribution
-price_distribution = filtered_df["price"].value_counts()
+price = filtered_df['price']
+miles = filtered_df['odometer']
 
 # Plot the price distribution
-plt.bar(price_distribution.index, price_distribution.values)
-plt.xlabel("price")
-plt.ylabel("Number of Cars")
-plt.title("Price distribution for " + selected_conditions)
+fig, ax = plt.subplots()
+ax.scatter(miles, price)
+plt.xlabel("Miles")
+plt.ylabel("Price")
+plt.title("Price Vs. Miles for " + selected_conditions)
 plt.show()
 
 # Display the plot in the Streamlit app
