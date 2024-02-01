@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd 
 import plotly.express as px 
+from matplotlib import pyplot as plt
 
 # Read in the Data
 df = pd.read_csv("vehicles_us.csv")
@@ -28,19 +29,13 @@ st.header('Car Listing Data Analysis')
 
 fig1 =px.histogram(df, x="make", title=' Number of Vehicles Listed by Make')
 fig1.update_layout(xaxis_title='Vehicle Make ', yaxis_title='Number of Vehicles Listed')
-fig1.show()
+st.plotly_chart(fig1)
 
 st.write('The majority of vehicles listed are made by Ford (12.6k) followed by Chevrolet (10.61k) and Toyota (5.4k). Mercedes has the least number of vehicles listed (41).')
 
 
 # Plot The model year by price with make Chart
-
-# Sidebar checkbox for selecting condition
-show_condition_1 = st.sidebar.checkbox("Show chart with Condition", value=True)
-# Determine which condition to show based on the checkbox value
-selected_condition_column = 'make' if show_condition_1 else 'condition'
-# Create Plotly Express figure
-fig3 = px.scatter(df, x="model_year", y="price", color=selected_condition_column, title="Price vs. Model Year")
+fig3 = px.scatter(df, x="model_year", y="price", color='make', title="Price vs. Model Year")
 fig3.update_layout(xaxis_title='Model Year', yaxis_title='Price')
 
 st.plotly_chart(fig3)
@@ -52,6 +47,27 @@ st.write('We Can see that typically the lowest priced cars are salvage. Most car
 fig3 = px.scatter(df, x="model_year", y="price", color="condition", title="Price vs. Model Year")
 fig3.update_layout(xaxis_title='Model Year', yaxis_title='Price')
 st.plotly_chart(fig3, use_container_width=True)
+
+
+# Create a choice box to filter by car model
+conditions = df["condition"].unique().tolist()
+selected_conditions = st.selectbox("Choose a condition:", conditions)
+
+# Filter the dataframe based on the selected car model
+filtered_df = df[df["condition"] == selected_conditions]
+
+# Calculate the price distribution
+price_distribution = filtered_df["price"].value_counts()
+
+# Plot the price distribution
+plt.bar(price_distribution.index, price_distribution.values)
+plt.xlabel("price")
+plt.ylabel("Number of Cars")
+plt.title("Price distribution for " + selected_conditions)
+plt.show()
+
+# Display the plot in the Streamlit app
+st.pyplot(plt)
 st.write('We Can see that typically the lowest priced cars are salvage. Most cars listed are good, excellent, or like new. ')
 
 # Scatter Matrix with Filters 
