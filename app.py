@@ -19,13 +19,18 @@ df['cylinders'] = df['cylinders'].fillna('unknown')
 df['is_4wd'] = df['is_4wd'].fillna(0)
 # For the paint_color column, fill Null values with 'unknown'
 df['paint_color'] = df['paint_color'].fillna('unknown')
+# Replace null values in the odometer column with the yearly average
+# Group by 'model_year' and calculate the average for 'odometer'
+grouped_average = df.groupby('model_year')['odometer'].transform('mean')
+# Use the grouped average to fill missing values in 'column_to_fill'
+df['odometer'] = df['odometer'].fillna(grouped_average)
 # Drop rows with null values in the model year or odometer columns 
 df= df.dropna(axis='rows')
 
 # Add in Header 
 st.header('Car Listing Data Analysis')
 
-# Plot the Vehicles Listed by make Chart 
+# FIG 1: Vehicles Listed by make Chart 
 
 fig1 =px.histogram(df, x="make", title=' Number of Vehicles Listed by Make')
 fig1.update_layout(xaxis_title='Vehicle Make ', yaxis_title='Number of Vehicles Listed')
@@ -34,21 +39,14 @@ st.plotly_chart(fig1)
 st.write('The majority of vehicles listed are made by Ford (12.6k) followed by Chevrolet (10.61k) and Toyota (5.4k). Mercedes has the least number of vehicles listed (41).')
 
 
-# Plot The model year by price with make Chart
-fig3 = px.scatter(df, x="model_year", y="price", color='make', title="Price vs. Model Year")
-fig3.update_layout(xaxis_title='Model Year', yaxis_title='Price')
+# FIG 2: model year by price with make Chart
+fig2 = px.scatter(df, x="model_year", y="price", color='make', title="Price vs. Model Year")
+fig2.update_layout(xaxis_title='Model Year', yaxis_title='Price')
 
-st.plotly_chart(fig3)
+st.plotly_chart(fig2)
 st.write('There is a trend suggesting that the price of newer cars typicaly has a higher ceiling. I can also see an that Chevys and Fords from the 1960s are an exception to that trend. ')
-st.write('We Can see that typically the lowest priced cars are salvage. Most cars listed are good, excellent, or like new. ')
 
-
-#plot and show model year by price with condition
-fig3 = px.scatter(df, x="model_year", y="price", color="condition", title="Price vs. Model Year")
-fig3.update_layout(xaxis_title='Model Year', yaxis_title='Price')
-st.plotly_chart(fig3, use_container_width=True)
-
-
+# FIG 3: Price by Miles with Condition Selecter 
 # Create a choice box to filter by car model
 conditions = df["condition"].unique().tolist()
 selected_conditions = st.selectbox("Choose a condition:", conditions)
@@ -66,17 +64,36 @@ plt.xlabel("Miles")
 plt.ylabel("Price")
 plt.title("Price Vs. Miles for " + selected_conditions)
 plt.show()
-
 # Display the plot in the Streamlit app
 st.pyplot(plt)
 st.write('We Can see that typically the lowest priced cars are salvage. Most cars listed are good, excellent, or like new. ')
 
+
+# FIG 4: Price by Miles with Scale Switcher
+st.title('Price Plot with Scale Switcher')
+# Checkbox to switch between linear and logarithmic scale
+log_scale = st.checkbox('Logarithmic Scale')
+# Create a Plotly figure
+x = df['odometer']
+y = df['price']
+fig4 = px.line(x=x, y=y, labels={'x': 'Odometer', 'y': 'Price'})
+
+# Update y-axis scale based on the checkbox value
+if log_scale:
+    fig4.update_layout(yaxis_type='log')
+else:
+    fig4.update_layout(yaxis_type='linear')
+
+# Display the Plotly figure using the Streamlit Plotly chart function
+st.plotly_chart(fig4)
+
+# FIG 5: Price Odometer and days listed compared
 # Scatter Matrix with Filters 
 # Dropdown for selecting dimensions
 selected_dimensions = st.multiselect(
     'Select Dimensions:',
     ['odometer', 'days_listed', 'price'], 
-    default=['price', 'odometer']
+    default=['price', 'days_listed']
 )
 # Scatter matrix plot
 scatter_matrix = px.scatter_matrix(
@@ -85,7 +102,7 @@ scatter_matrix = px.scatter_matrix(
 )
 # Display the plot
 st.plotly_chart(scatter_matrix)
-st.write('As the miles on the car increases, the price decreases reguardless of other factors.')
+st.write('As the miles on the car increases, the price decreases regardless of other factors.')
 
 # Show conclusion 
 st.header('Conclusions')
