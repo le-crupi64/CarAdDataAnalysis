@@ -76,13 +76,12 @@ log_scale = st.checkbox('Logarithmic Scale')
 # Create a Plotly figure
 x = df['odometer']
 y = df['price']
-fig4 = px.line(x=x, y=y, labels={'x': 'Odometer', 'y': 'Price'})
+fig4 = px.scatter(x=x, y=y, labels={'x': 'Odometer', 'y': 'Price'})
 
 # Update y-axis scale based on the checkbox value
 if log_scale:
     fig4.update_layout(yaxis_type='log')
-else:
-    fig4.update_layout(yaxis_type='linear')
+
 
 # Display the Plotly figure using the Streamlit Plotly chart function
 st.plotly_chart(fig4)
